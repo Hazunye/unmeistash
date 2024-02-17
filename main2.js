@@ -3,7 +3,6 @@
 var UI_Favicon = 1;				// [&] channel favicon
 var UI_MiniLogo = 0;			// [&] small channel logo/avatar in the top navbar
 var UI_ChannelName = 1;			// [&] channel custom brand name
-							// [&] additional header dropdown menu
 var UI_RemoveHomeMenu = 1;		// removing 'Home' menu from the header
 var UI_TitleBarDescription = 1;	// [&] custom title bar description
 var UI_UserCommands = 1;		// [&] additional commands in the chat window
