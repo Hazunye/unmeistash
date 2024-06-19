@@ -36,7 +36,7 @@ $('head').append('<script type="text/javascript" src="' + `${SCRIPT_FOLDER_URL}/
 let ANTISPAMREGEX = /(?![^<Ð]*[>Ð&])\b(\w+)\b\s*(?=.*\b\1\b)|(?![Ð])[^\x00-\x80]+/gi;
 let TEAMCOLORREGEX = /( |)<span style="display:none" class="teamColorSpan">.+/gi;
 
-const CURRENTBOT = "Happy";
+const CURRENTBOT = "Mahoro";
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
