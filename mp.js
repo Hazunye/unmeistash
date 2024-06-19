@@ -24,9 +24,9 @@ SCRIPT_FOLDER_URL = SCRIPT_FOLDER_URL.join('/');
 
 var adPercent = 0.1;
 
-var Favicon_URL = `${SCRIPT_FOLDER_URL}/yes.png`;
+var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/princess.png`;
 
-var ChannelName_Caption = "GATTAI";
+var ChannelName_Caption = "unmei";
 
 var TitleBarDescription_Caption = '>Streaming:';
 
