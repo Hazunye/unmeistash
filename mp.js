@@ -26,7 +26,7 @@ var adPercent = 0.1;
 
 var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/see.jpg`;
 
-var ChannelName_Caption = "unmei";
+var ChannelName_Caption = "GATTAI";
 
 var TitleBarDescription_Caption = '>Streaming:';
 
