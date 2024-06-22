@@ -2742,6 +2742,15 @@ socket.on("moveVideo", function() {
 	}, 750);
 });
 
+socket.on("login", function() {
+	patchWrap();
+	if (UI_JoinText === 1 && CLIENT.name && CLIENT.guest && !JOINED) {
+		//socket.emit("chatMsg", {msg: '/me [CH' + SUBCHAN + ']' + JoinText_Message});
+		socket.emit("chatMsg", {msg: '/me ' + JoinText_Message});
+		JOINED = true;
+	}
+});
+
 function updateEndTimesOnLoad() {
     var PLTimeList = Array.from(document.getElementsByClassName("qe_time")).forEach(function (PLCurrElement) {
         var qeEndTime = document.createElement("span");
