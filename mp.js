@@ -24,7 +24,7 @@ SCRIPT_FOLDER_URL = SCRIPT_FOLDER_URL.join('/');
 
 var adPercent = 0.1;
 
-var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/princess.png`;
+var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/see.jpg`;
 
 var ChannelName_Caption = "unmei";
 
