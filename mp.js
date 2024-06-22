@@ -122,6 +122,7 @@ var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
 var PINGVOL = getOrDefault(CHANNEL.name + "_PINGVOL", 1);
 var SHOWPROF = getOrDefault(CHANNEL.name + "_SHOWPROF", false);
 var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), CHANNEL.usercount);
+var JOINED = false;
 var SHOWING = false;
 var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override Cytube's default limit
 // The interval of time (in ms) to flush messages to the screen
