@@ -36,6 +36,10 @@ var ThemesCSS = [
 var TopUserLogo = [
 ];
 
+var JoinText_Message = 'ROW ROW FIGHT THE POWAH.';
+
+var LeaveText_Message = 'has tried the restarting.';
+
 let TEAMCOLORREGEX = /( |)<span style="display:none" class="teamColorSpan">.+/gi;
 
 
