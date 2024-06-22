@@ -11,9 +11,6 @@
 //		
 //
 
-var UI_JoinText = 1;			// [&] chat message after user joining
-var UI_LeaveText = 1;			// [&] chat message after user leaving
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* ----- DETAILED BASIC CONFIGURATION ----- */
@@ -113,10 +110,12 @@ var MAXW = getOrDefault(CHANNEL.name + "_MAXW", "300");
 var HIDEHF = getOrDefault(CHANNEL.name + "_HIDEHF", false);
 var HIDEPL = getOrDefault(CHANNEL.name + "_HIDEPL", false);
 var HIDEANN = getOrDefault(CHANNEL.name + "_HIDEANN", false);
-var HIDEMOTD = getOrDefault(CHANNEL.name + "_HIDEMOTD", true);
+var HIDEMOTD = getOrDefault(CHANNEL.name + "_HIDEMOTD", false);
 var CHATFUNC = false;
 var CLEARING = false;
 var ANTIAFK = false;
+var UI_JoinText = 1;		
+var UI_LeaveText = 1;			
 var ADDONESECOND = '';
 var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
