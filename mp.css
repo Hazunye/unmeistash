@@ -171,27 +171,8 @@ footer {padding-bottom:5px}
 }
 
 /*Reddit flair*/
-.username::before{background:url('./Images/princess.png');}
-.teamchiemi::before{background:url('./Images/chiemi.png');}
-.teameriko::before{background:url('./Images/eriko.png');}
-.teamesmeralda::before{background:url('./Images/esmeralda.png');}
-.teamhibari::before{background:url('./Images/hibari.png');}
-.teamhikari::before{background:url('./Images/hikari.png');}
-.teamhimari::before{background:url('./Images/himari.png');}
-.teamkanba::before{background:url('./Images/kanba.png');}
-.teamkeiju::before{background:url('./Images/keiju.png');}
-.teamkenzan::before{background:url('./Images/kenzan.png');}
-.teammario::before{background:url('./Images/mario.png');}
-.teammasako::before{background:url('./Images/masako.png');}
-.teammomoka::before{background:url('./Images/momoka.png');}
-.teampenguin1::before{background:url('./Images/penguin1.png');}
-.teampenguin2::before{background:url('./Images/penguin2.png');}
-.teampenguin3::before{background:url('./Images/penguin3.png');}
-.teamringo::before{background:url('./Images/ringo.png');}
-.teamsanetoshi::before{background:url('./Images/sanetoshi.png');}
-.teamsatoshi::before{background:url('./Images/satoshi.png');}
-.teamshouma::before{background:url('./Images/shouma.png');}
-.teamyuri::before{background:url('./Images/yuri.png');}
+.username::before{background:url('./Images/see.jpg');}
+.teamkamina::before{background:url('./Images/Kamina Glasses.png');}
 
 .username::before{
 	content:"AA";
