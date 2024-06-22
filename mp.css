@@ -172,7 +172,7 @@ footer {padding-bottom:5px}
 
 /*Reddit flair*/
 .username::before{background:url('./Images/see.jpg');}
-.teamkamina::before{background:url('./Images/Kamina Glasses.png');}
+.teamkamina::before{background:url('./Images/Kamina_Glasses.png');}
 
 .username::before{
 	content:"AA";
