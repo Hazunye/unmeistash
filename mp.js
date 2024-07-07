@@ -3020,14 +3020,6 @@ $('<div id="adChat"></div>').appendTo($("#chatwrap"));
 $('<div id="adPL1"></div>').appendTo($("#mainpage"));
 $('<div id="adPL2"></div>').appendTo($("#mainpage"));
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.userlist_item .username').forEach(function(el) {
-        if (el.textContent.trim() === 'Signless') {
-            el.classList.add('Signless');
-        }
-    });
-});
-
 //fitChat(1000);
 //$("#messagebuffer.linewrap img, .pm-buffer.linewrap img").css({"max-height": "1000px","max-width": "1000px"});
 
