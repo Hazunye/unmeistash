@@ -2311,26 +2311,26 @@ function formatChatMessage(data, last) {
 	
 	CustomTextTriggers.handleChatMessage(data);
 //	if (PLAYER.mediaLength > 600) {
-		data.msg = data.msg.replace(TEAMCOLORREGEX,"").replace(/Ð.+Ð/,"").trim();
-		
-		if (data.msg.length === 0) {
-			return;
-		}
-		if (data.msg.replace(/<.+?>| /gi,"").length > 25) {
-			var greaterThanSign = 0;
-			if (data.msg[0] === "<") {
-				greaterThanSign = data.msg.indexOf(">");
-			}
-
-			var noHTMLMsg = data.msg.replace(/<.+?>/gi," ");
-			var splitMsg = noHTMLMsg.split(" ");
-			for (var iChar = 0; iChar < splitMsg.length; iChar++) {
-				if (splitMsg[iChar].length > 25) {
-					data.msg = data.msg.substring(0, 25 + greaterThanSign);
-					break;
-				}
-			}
-		}
+//		data.msg = data.msg.replace(TEAMCOLORREGEX,"").replace(/Ð.+Ð/,"").trim();
+//		
+//		if (data.msg.length === 0) {
+//			return;
+//		}
+//		if (data.msg.replace(/<.+?>| /gi,"").length > 25) {
+//			var greaterThanSign = 0;
+//			if (data.msg[0] === "<") {
+//				greaterThanSign = data.msg.indexOf(">");
+//			}
+//
+//			var noHTMLMsg = data.msg.replace(/<.+?>/gi," ");
+//			var splitMsg = noHTMLMsg.split(" ");
+//			for (var iChar = 0; iChar < splitMsg.length; iChar++) {
+//				if (splitMsg[iChar].length > 25) {
+//					data.msg = data.msg.substring(0, 25 + greaterThanSign);
+//					break;
+//				}
+//			}
+//		}
 //	}
     last.name = data.username;
     var div = $("<div/>");
