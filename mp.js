@@ -442,6 +442,65 @@ fixUserlistHover();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+function prepareFilters() {
+	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
+		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
+		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
+		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},';
+	
+	callback = function(data) {
+		socket.listeners("chatFilters").splice(
+			socket.listeners("chatFilters").indexOf(callback)
+		);
+		temp = JSON.stringify(data);
+		comma = (temp.length!="2") ? ',' : '';
+		$("#cs-chatfilters-exporttext").val(temp.substring(0, temp.length-1) + comma + str);
+	};
+	socket.once("chatFilters", callback);
+	socket.emit("requestChatFilters");
+}
+
+function showImages() {
+	$(".pm-buffer.linewrap, #messagebuffer.linewrap").find('a[href^="http"]').each(function() {
+		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
+		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var chkclass = $(this).attr('class');
+		if (chkclass !== undefined && chkclass !== "webm" && (EBLnum < 0 && UEBLnum < 0)) {
+			var isanemote = false;
+			if (chkclass === "channel-emote") {
+				for (i in CHANNEL.emotes) {
+					if ($(this).prop('title') === CHANNEL.emotes[i].name) {
+						img = $('<img class="channel-emote" />').attr('src', this.href).attr('title', $(this).prop('title'));
+						isanemote = true;
+						break;
+					}
+				}
+
+			 else {
+				img = $('<img class="picturelink" />').attr('src', this.href);
+			}
+			isanemote ? $(this).before(img).remove() : $(this).html(img);
+		}
+	});
+
+hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
+	.insertAfter("#modflair")
+	.on("click", function() {
+		HIDEIMG = !HIDEIMG;
+		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
+	  	if (HIDEIMG) {
+			removeImages();
+			hideimgbtn.addClass('btn-danger');
+			hideimgbtn.attr("title", "Show Images");
+		} else {
+			hideimgbtn.removeClass('btn-danger');
+			showImages();
+	 		hideimgbtn.attr("title", "Hide Images");
+		}
+});
+
 // change title bar description
 function changeTitle() {
 	title = $("#currenttitle").text();
