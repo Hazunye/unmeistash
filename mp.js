@@ -461,46 +461,6 @@ function prepareFilters() {
 	socket.emit("requestChatFilters");
 }
 
-function showImages() {
-	$(".pm-buffer.linewrap, #messagebuffer.linewrap").find('a[href^="http"]').each(function() {
-		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
-		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var chkclass = $(this).attr('class');
-		if (chkclass !== undefined && chkclass !== "webm" && (EBLnum < 0 && UEBLnum < 0)) {
-			var isanemote = false;
-			if (chkclass === "channel-emote") {
-				for (i in CHANNEL.emotes) {
-					if ($(this).prop('title') === CHANNEL.emotes[i].name) {
-						img = $('<img class="channel-emote" />').attr('src', this.href).attr('title', $(this).prop('title'));
-						isanemote = true;
-						break;
-					}
-				}
-
-			 else {
-				img = $('<img class="picturelink" />').attr('src', this.href);
-			}
-			isanemote ? $(this).before(img).remove() : $(this).html(img);
-		}
-	});
-
-hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
-	.insertAfter("#modflair")
-	.on("click", function() {
-		HIDEIMG = !HIDEIMG;
-		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
-	  	if (HIDEIMG) {
-			removeImages();
-			hideimgbtn.addClass('btn-danger');
-			hideimgbtn.attr("title", "Show Images");
-		} else {
-			hideimgbtn.removeClass('btn-danger');
-			showImages();
-	 		hideimgbtn.attr("title", "Hide Images");
-		}
-});
-
 // change title bar description
 function changeTitle() {
 	title = $("#currenttitle").text();
