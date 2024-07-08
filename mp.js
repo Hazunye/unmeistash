@@ -447,11 +447,6 @@ function changeTitle() {
 	title = $("#currenttitle").text();
 	$("#currenttitle").text(title.replace(/^Currently Playing:/, TitleBarDescription_Caption));
 }
-// change title bar description
-function changeTitle() {
-	title = $("#currenttitle").text();
-	$("#currenttitle").text(title.replace(/^Currently Playing:/, TitleBarDescription_Caption));
-}
 
 // expand/collapse queue
 function expandQueue() {
