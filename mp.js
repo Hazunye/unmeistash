@@ -442,38 +442,6 @@ fixUserlistHover();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function prepareFilters() {
-	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
-		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
-		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
-		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Right float image","source":"http(.+?):float","flags":"gi",'
-	
-	callback = function(data) {
-		socket.listeners("chatFilters").splice(
-			socket.listeners("chatFilters").indexOf(callback)
-		);
-		temp = JSON.stringify(data);
-		comma = (temp.length!="2") ? ',' : '';
-		$("#cs-chatfilters-exporttext").val(temp.substring(0, temp.length-1) + comma + str);
-	};
-
-	socket.once("chatFilters", callback);
-	socket.emit("requestChatFilters");
-}
-	callback = function(data) {
-		socket.listeners("chatFilters").splice(
-			socket.listeners("chatFilters").indexOf(callback)
-		);
-		temp = JSON.stringify(data);
-		comma = (temp.length!="2") ? ',' : '';
-		$("#cs-chatfilters-exporttext").val(temp.substring(0, temp.length-1) + comma + str);
-	};
-
-	socket.once("chatFilters", callback);
-	socket.emit("requestChatFilters");
-}
-
 // change title bar description
 function changeTitle() {
 	title = $("#currenttitle").text();
