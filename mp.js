@@ -1580,12 +1580,12 @@ currenttimebtn = $('<button id="findtime" class="btn btn-xs btn-default" title="
 		}
 });
 
-$('<span id="maxusers" title="Maximum Lowlifes">' + MAXUSERS + ' max lowlifes</span>')
+$('<span id="maxusers" title="Maximum Autists">' + MAXUSERS + ' max autists</span>')
 	.appendTo("#chatheader")
 
 Callbacks.usercount = function(count) {
         CHANNEL.usercount = count;
-        var text = count + " lowlife";
+        var text = count + " autist";
         if(count != 1) {
             text += "s";
         }
