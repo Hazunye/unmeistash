@@ -449,7 +449,28 @@ function prepareFilters() {
 	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
 		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
 		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
-		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true}]';
+		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
+		+ '{"name":"Right float image","source":"http(.+?):float","flags":"gi",'
+		+ '"replace":"<a class=\\"rightfloatpic\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"float:right; max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
+		+ '{"name":"Left float image","source":"http(.+?):lf","flags":"gi",'
+		+ '"replace":"<a class=\\"leftfloatpic\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"float:left; max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
+		+ '{"name":"Spin image","source":"http(.+?):@","flags":"gi",' 
+		+ '"replace":"<a class=\\"spinpic\\" href=\\"http$1\\" target=\\"_blank\\"><img class=\\"spin\\" src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
+		+ '{"name":"Spoiler image","source":"http(.+?):sp","flags":"gi",'
+		+ '"replace":"<a class=\\"spoilerpic\\" href=\\"http$1\\" target=\\"_blank\\"><img class=\\"spoilerpic\\" src=\\"'+SpoilerImg+'\\"></a>","active":true,"filterlinks":true},'
+		+ '{"name":"Spin Text","source":"\\\\[@\\\\]","flags":"gi",'
+		+ '"replace":"<span class=\\"spin\\">","active":true,"filterlinks":false},'
+		+ '{"name":"Untz color","source":"\\\\[untz\\\\]","flags":"gi",'
+		+ '"replace":"<span class=\\"untz\\">","active":true,"filterlinks":false},'
+		+ '{"name":"Right float text","source":"\\\\[float\\\\]","flags":"gi",'
+		+ '"replace":"<span style=\\"float:right\\">","active":true,"filterlinks":false},'
+		+ '{"name":"Left float text","source":"\\\\[lf\\\\]","flags":"gi",'
+		+ '"replace":"<span style=\\"float:left\\">","active":true,"filterlinks":false},'
+		+ '{"name":"Closing font style","source":"\\\\[\\\\/\\\\]","flags":"gi",'
+		+ '"replace":"</span></marquee>","active":true,"filterlinks":false},'
+		+ '{"name":"Lottery","source":"'+Lottery.text+'","flags":"g",'
+		+ '"replace":"<a class=\\"lotterypic\\" href=\\"'+Lottery.click+'\\" target=\\"_blank\\"><img class=\\"lotterypic\\" src=\\"'+Lottery.image+'\\"></a>","active":true,"filterlinks":false}]';
+
 	
 	callback = function(data) {
 		socket.listeners("chatFilters").splice(
@@ -1371,6 +1392,78 @@ hidehfbtn = $('<button id="hidehf-btn" class="btn btn-sm btn-default" title="Hid
 		HIDEPL ? hidehfbtn.attr("title","Show Header and Footer") : hidehfbtn.attr("title","Hide Header and Footer");
 });
 
+hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
+	.insertAfter("#modflair")
+	.on("click", function() {
+		HIDEIMG = !HIDEIMG;
+		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
+	  	if (HIDEIMG) {
+			removeImages();
+			hideimgbtn.addClass('btn-danger');
+			hideimgbtn.attr("title", "Show Images");
+		} else {
+			hideimgbtn.removeClass('btn-danger');
+			showImages();
+	 		hideimgbtn.attr("title", "Hide Images");
+		}
+});
+function removeImages() {
+	$('.pm-buffer.linewrap img, #messagebuffer.linewrap img').each(function() {
+		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
+		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var EBLtitle = $(this).attr('title') || ":emote:";
+		console.log(EBLtitle);
+		if ((HIDEIMG || ((EBLnum > -1 || UEBLnum > -1) && EBLtitle.indexOf(":") > -1)) && !$(this).hasClass("user")) {
+			if ($(this).hasClass("channel-emote")) {
+				$('<a class="channel-emote" target="_blank">' + $(this).prop('title') + '</a>').attr('href', $(this).prop('src')).attr('title', $(this).prop('title')).insertBefore(this);
+			} else if ($(this).hasClass("spoilerpic")) {
+				$(this).text($(this).before('SPOILER'));
+			} else if ($(this).hasClass("lotterypic")) {
+				$(this).text($(this).before('WINNER'));
+			} else {
+				$(this).text($(this).before($(this).attr("src")));
+			}
+			$(this).remove();
+		}
+	});
+}
+function showImages() {
+	$(".pm-buffer.linewrap, #messagebuffer.linewrap").find('a[href^="http"]').each(function() {
+		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
+		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
+		var chkclass = $(this).attr('class');
+		if (chkclass !== undefined && chkclass !== "webm" && (EBLnum < 0 && UEBLnum < 0)) {
+			var isanemote = false;
+			if (chkclass === "channel-emote") {
+				for (i in CHANNEL.emotes) {
+					if ($(this).prop('title') === CHANNEL.emotes[i].name) {
+						img = $('<img class="channel-emote" />').attr('src', this.href).attr('title', $(this).prop('title'));
+						isanemote = true;
+						break;
+					}
+				}
+			} else if (chkclass === "spinpic") {
+				img = $('<img class="spin" />').attr('src', this.href);
+			} else if (chkclass === "rightfloatpic") {
+				img = $('<img class="rightfloat" />').attr('src', this.href);
+			} else if (chkclass === "leftfloatpic") {
+				img = $('<img class="leftfloat" />').attr('src', this.href);
+			} else if (chkclass === "spoilerpic") {
+				img = $('<img class="spoilerpic" />').attr('src', 'http://i.imgur.com/xzD4vqc.png');
+			} else if (chkclass === "lotterypic") {
+				img = $('<img class="lotterypic" />').attr('src', Lottery.image);
+			} else {
+				img = $('<img class="picturelink" />').attr('src', this.href);
+			}
+			isanemote ? $(this).before(img).remove() : $(this).html(img);
+		}
+	});
+	!SPINTOG ? $(".spin").addClass("nospin").removeClass("spin") : '';
+	setTimeout(scrollChat, 1000);
+	$(".pm-buffer.linewrap img, #messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
+}
 hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
 	.insertAfter("#modflair")
 	.on("click", function() {
