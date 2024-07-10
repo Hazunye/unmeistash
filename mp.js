@@ -40,13 +40,13 @@ var LeaveText_Message = 'has tried the restarting.';
 
 let TEAMCOLORREGEX = /( |)<span style="display:none" class="teamColorSpan">.+/gi;
 
-UI_EmbeddingMedia = 1;		// [&] possibility to embedding (displaying) images and .webm videos on the chat
-UI_MediaControls = 1;		// embedded video preloaded controls
+var UI_EmbeddingMedia = 1;		// [&] possibility to embedding (displaying) images and .webm videos on the chat
+var UI_MediaControls = 1;		// embedded video preloaded controls
 				// [ REQUIRE: UI_EmbeddingMedia enabled ]
 
-EmbeddingMedia_Images = 'a[href$=".jpg"], a[href$=".jpg:large"], a[href$=".jpeg"], a[href$=".JPG"], a[href$=".png"], a[href$=".tiff"], a[href$=".gif"]';
+var EmbeddingMedia_Images = 'a[href$=".jpg"], a[href$=".jpg:large"], a[href$=".jpeg"], a[href$=".JPG"], a[href$=".png"], a[href$=".tiff"], a[href$=".gif"]';
 
-EmbeddingMedia_Videos = 'a[href$=".webm"]';
+var EmbeddingMedia_Videos = 'a[href$=".webm"]';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* ----- END OF CONFIGURATION, DO NOT CHANGE ANYTHING BELOW ----- */
