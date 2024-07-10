@@ -111,14 +111,11 @@ var HIDEHF = getOrDefault(CHANNEL.name + "_HIDEHF", false);
 var HIDEPL = getOrDefault(CHANNEL.name + "_HIDEPL", false);
 var HIDEANN = getOrDefault(CHANNEL.name + "_HIDEANN", false);
 var HIDEMOTD = getOrDefault(CHANNEL.name + "_HIDEMOTD", false);
-var HIDEIMG = getOrDefault(CHANNEL.name + "_HIDEIMG", false);
 var CHATFUNC = false;
 var CLEARING = false;
 var ANTIAFK = false;
 var UI_JoinText = 1;		
 var UI_LeaveText = 1;			
-var UI_EmbeddingMedia = 1;		// [&] possibility to embedding (displaying) images and .webm videos on the chat
-var UI_MediaControls = 1;		// embedded video preloaded controls
 var ADDONESECOND = '';
 var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
@@ -450,28 +447,7 @@ function prepareFilters() {
 	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
 		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
 		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
-		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Right float image","source":"http(.+?):float","flags":"gi",'
-		+ '"replace":"<a class=\\"rightfloatpic\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"float:right; max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Left float image","source":"http(.+?):lf","flags":"gi",'
-		+ '"replace":"<a class=\\"leftfloatpic\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"float:left; max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Spin image","source":"http(.+?):@","flags":"gi",' 
-		+ '"replace":"<a class=\\"spinpic\\" href=\\"http$1\\" target=\\"_blank\\"><img class=\\"spin\\" src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Spoiler image","source":"http(.+?):sp","flags":"gi",'
-		+ '"replace":"<a class=\\"spoilerpic\\" href=\\"http$1\\" target=\\"_blank\\"><img class=\\"spoilerpic\\" src=\\"'+SpoilerImg+'\\"></a>","active":true,"filterlinks":true},'
-		+ '{"name":"Spin Text","source":"\\\\[@\\\\]","flags":"gi",'
-		+ '"replace":"<span class=\\"spin\\">","active":true,"filterlinks":false},'
-		+ '{"name":"Untz color","source":"\\\\[untz\\\\]","flags":"gi",'
-		+ '"replace":"<span class=\\"untz\\">","active":true,"filterlinks":false},'
-		+ '{"name":"Right float text","source":"\\\\[float\\\\]","flags":"gi",'
-		+ '"replace":"<span style=\\"float:right\\">","active":true,"filterlinks":false},'
-		+ '{"name":"Left float text","source":"\\\\[lf\\\\]","flags":"gi",'
-		+ '"replace":"<span style=\\"float:left\\">","active":true,"filterlinks":false},'
-		+ '{"name":"Closing font style","source":"\\\\[\\\\/\\\\]","flags":"gi",'
-		+ '"replace":"</span></marquee>","active":true,"filterlinks":false},'
-		+ '{"name":"Lottery","source":"'+Lottery.text+'","flags":"g",'
-		+ '"replace":"<a class=\\"lotterypic\\" href=\\"'+Lottery.click+'\\" target=\\"_blank\\"><img class=\\"lotterypic\\" src=\\"'+Lottery.image+'\\"></a>","active":true,"filterlinks":false}]';
-
+		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},';
 	
 	callback = function(data) {
 		socket.listeners("chatFilters").splice(
@@ -1392,165 +1368,6 @@ hidehfbtn = $('<button id="hidehf-btn" class="btn btn-sm btn-default" title="Hid
 		HIDEHF ? hidehfbtn.addClass('btn-danger') : hidehfbtn.removeClass('btn-danger');
 		HIDEPL ? hidehfbtn.attr("title","Show Header and Footer") : hidehfbtn.attr("title","Hide Header and Footer");
 });
-
-hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
-	.insertAfter("#modflair")
-	.on("click", function() {
-		HIDEIMG = !HIDEIMG;
-		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
-	  	if (HIDEIMG) {
-			removeImages();
-			hideimgbtn.addClass('btn-danger');
-			hideimgbtn.attr("title", "Show Images");
-		} else {
-			hideimgbtn.removeClass('btn-danger');
-			showImages();
-	 		hideimgbtn.attr("title", "Hide Images");
-		}
-});
-function removeImages() {
-	$('.pm-buffer.linewrap img, #messagebuffer.linewrap img').each(function() {
-		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
-		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var EBLtitle = $(this).attr('title') || ":emote:";
-		console.log(EBLtitle);
-		if ((HIDEIMG || ((EBLnum > -1 || UEBLnum > -1) && EBLtitle.indexOf(":") > -1)) && !$(this).hasClass("user")) {
-			if ($(this).hasClass("channel-emote")) {
-				$('<a class="channel-emote" target="_blank">' + $(this).prop('title') + '</a>').attr('href', $(this).prop('src')).attr('title', $(this).prop('title')).insertBefore(this);
-			} else if ($(this).hasClass("spoilerpic")) {
-				$(this).text($(this).before('SPOILER'));
-			} else if ($(this).hasClass("lotterypic")) {
-				$(this).text($(this).before('WINNER'));
-			} else {
-				$(this).text($(this).before($(this).attr("src")));
-			}
-			$(this).remove();
-		}
-	});
-}
-function showImages() {
-	$(".pm-buffer.linewrap, #messagebuffer.linewrap").find('a[href^="http"]').each(function() {
-		var EBLname =  $(this).parents("div").attr("class") || "chat-msg-" + $(this).parents(".panel-body").siblings().text().slice(0,-1);
-		var EBLnum = EMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var UEBLnum = USEREMOTEBL.indexOf(EBLname.split("chat-msg-")[1]);
-		var chkclass = $(this).attr('class');
-		if (chkclass !== undefined && chkclass !== "webm" && (EBLnum < 0 && UEBLnum < 0)) {
-			var isanemote = false;
-			if (chkclass === "channel-emote") {
-				for (i in CHANNEL.emotes) {
-					if ($(this).prop('title') === CHANNEL.emotes[i].name) {
-						img = $('<img class="channel-emote" />').attr('src', this.href).attr('title', $(this).prop('title'));
-						isanemote = true;
-						break;
-					}
-				}
-			} else if (chkclass === "spinpic") {
-				img = $('<img class="spin" />').attr('src', this.href);
-			} else if (chkclass === "rightfloatpic") {
-				img = $('<img class="rightfloat" />').attr('src', this.href);
-			} else if (chkclass === "leftfloatpic") {
-				img = $('<img class="leftfloat" />').attr('src', this.href);
-			} else if (chkclass === "spoilerpic") {
-				img = $('<img class="spoilerpic" />').attr('src', 'http://i.imgur.com/xzD4vqc.png');
-			} else if (chkclass === "lotterypic") {
-				img = $('<img class="lotterypic" />').attr('src', Lottery.image);
-			} else {
-				img = $('<img class="picturelink" />').attr('src', this.href);
-			}
-			isanemote ? $(this).before(img).remove() : $(this).html(img);
-		}
-	});
-	!SPINTOG ? $(".spin").addClass("nospin").removeClass("spin") : '';
-	setTimeout(scrollChat, 1000);
-	$(".pm-buffer.linewrap img, #messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
-}
-hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
-	.insertAfter("#modflair")
-	.on("click", function() {
-		HIDEIMG = !HIDEIMG;
-		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
-	  	if (HIDEIMG) {
-			removeImages();
-			hideimgbtn.addClass('btn-danger');
-			hideimgbtn.attr("title", "Show Images");
-		} else {
-			hideimgbtn.removeClass('btn-danger');
-			showImages();
-	 		hideimgbtn.attr("title", "Hide Images");
-		}
-});
-
-function createWEBM() {
-	if (EMBEDVID && UI_EmbeddingMedia === 1) {
-		$(".webm").each(function() {
-			splitwebmlink = this.href;
-			vid = $('<video class="embedvid" />').attr('src', splitwebmlink).prop('loop', LOOPWEBM).prop('muted', 'true').prop('autoplay', AUTOVID)
-				.on("click", function() {
-					$(this).get(0).paused ? $(this).get(0).play() : $(this).get(0).pause();
-					return false;
-				}).on("dblclick", function() {
-					window.open(splitwebmlink, '_blank');
-					return false;
-				});
-			UI_MediaControls === 1 ? vid.attr('controls', '') : '';
-			SCROLLCHAT ? scrollChat() : '';
-			$(this).before(vid).remove();
-		});
-		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").css({"max-width": MAXW + "px","max-height": MAXH + "px"});
-	}
-}
-
-if (UI_EmbeddingMedia === 1) {
-	embedform = $('<div id="embedform" class="form-group" />').appendTo(configwell);
-	$('<div class="col-lg-3 col-md-3 conf-cap">Embeds<span id="embed-help">[?]</span></div>')
-	  .appendTo(embedform);
-	embedwrap = $('<div id="embedwrap" class="btn-group col-lg-6 col-md-6" />').appendTo(embedform);
-	txt = 'This option lets you see Webms directly on the chat, instead of links.\n'
-	  + 'Double click on a Webm to open in the new tab.\n'
-	  + 'All Webms are muted by default.';
-	$("#embed-help").prop("title", txt).on("click", function() {
-		alert(txt);
-	});
-	embedvid = $('<button id="embedvid-btn" class="btn btn-sm btn-default" title="Toggle Webm">Webm</button>')
-		.appendTo(embedwrap)
-	 	.on("click", function() {
-			EMBEDVID = !EMBEDVID;
-			setOpt(CHANNEL.name + "_EMBEDVID", EMBEDVID);
-			toggleDiv(autovid);
-			toggleDiv(loopwebm);
-			!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
-			if (!EMBEDVID) {
-				$('.pm-buffer.linewrap video, #messagebuffer.linewrap video').each(function() {
-					$('<a target="_blank" class="webm"></a>').attr('href', $(this).prop('src')).insertBefore(this).text($(this).prop('src'));
-				}).remove();
-			} else {
-				createWEBM();
-			}
-	  });
-	!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
-	autovid = $('<button id="autoplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Autoplay">Autoplay</button>')
-		.appendTo(embedwrap)
-		.on("click", function() {
-			AUTOVID = !AUTOVID;
-			setOpt(CHANNEL.name + "_AUTOVID", AUTOVID);
-			!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
-		});
-	!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
-	!EMBEDVID ? autovid.hide() : '';
-	
-	loopwebm = $('<button id="loopplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Loop">Loop</button>')
-		.appendTo(embedwrap)
-		.on("click", function() {
-			LOOPWEBM = !LOOPWEBM;
-			setOpt(CHANNEL.name + "_LOOPWEBM", LOOPWEBM);
-			!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
-			$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").prop('loop', LOOPWEBM);
-		});
-	!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
-	!EMBEDVID ? loopwebm.hide() : '';
-}
-
 // rearranging footer
 leftfooter = $('<span id="leftfooter"></span>').appendTo("footer .container");
 
@@ -1714,10 +1531,7 @@ if (HIDEHF) {
 	hidehfbtn.addClass('btn-danger');
 	hidehfbtn.attr("title","Show Header and Footer");
 }
-if (HIDEIMG) {
-	hideimgbtn.addClass('btn-danger');
-	hideimgbtn.attr("title", "Show Images");
-}
+
 function getVideoTime(data) {
 	clearInterval(ADDONESECOND);
 	hour = Math.floor(data.currentTime / 3600);
@@ -3147,6 +2961,78 @@ socket.on("login", function() {
 	}
 });
 
+function createWEBM() {
+	if (EMBEDVID) {
+		$(".webm").each(function() {
+			splitwebmlink = this.href;
+			vid = $('<video class="embedvid" />').attr('src', splitwebmlink).prop('loop', LOOPWEBM).prop('muted', 'true').prop('autoplay', AUTOVID)
+				.on("click", function() {
+					$(this).get(0).paused ? $(this).get(0).play() : $(this).get(0).pause();
+					return false;
+				}).on("dblclick", function() {
+					window.open(splitwebmlink, '_blank');
+					return false;
+				});
+			vid.attr('controls', '');
+			SCROLLCHAT ? scrollChat() : '';
+			$(this).before(vid).remove();
+		});
+		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").css({"max-width": MAXW + "px","max-height": MAXH + "px"});
+	}
+}
+
+EMBEDVID ? createWEBM() : "";
+
+socket.on("chatMsg", createWEBM);
+
+embedform = $('<div id="embedform" class="form-group" />').appendTo(configwell);
+$('<div class="col-lg-3 col-md-3 conf-cap">Embeds<span id="embed-help">[?]</span></div>')
+  .appendTo(embedform);
+embedwrap = $('<div id="embedwrap" class="btn-group col-lg-6 col-md-6" />').appendTo(embedform);
+txt = 'This option lets you see Webms directly on the chat, instead of links.\n'
+  + 'Double click on a Webm to open in the new tab.\n'
+  + 'All Webms are muted by default.';
+$("#embed-help").prop("title", txt).on("click", function() {
+	alert(txt);
+});
+embedvid = $('<button id="embedvid-btn" class="btn btn-sm btn-default" title="Toggle Webm">Webm</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		EMBEDVID = !EMBEDVID;
+		setOpt(CHANNEL.name + "_EMBEDVID", EMBEDVID);
+		toggleDiv(autovid);
+		toggleDiv(loopwebm);
+		!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
+		if (!EMBEDVID) {
+			$('.pm-buffer.linewrap video, #messagebuffer.linewrap video').each(function() {
+				$('<a target="_blank" class="webm"></a>').attr('href', $(this).prop('src')).insertBefore(this).text($(this).prop('src'));
+			}).remove();
+		} else {
+			createWEBM();
+		}
+  });
+!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
+autovid = $('<button id="autoplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Autoplay">Autoplay</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		AUTOVID = !AUTOVID;
+		setOpt(CHANNEL.name + "_AUTOVID", AUTOVID);
+		!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
+	});
+!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
+!EMBEDVID ? autovid.hide() : '';
+
+loopwebm = $('<button id="loopplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Loop">Loop</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		LOOPWEBM = !LOOPWEBM;
+		setOpt(CHANNEL.name + "_LOOPWEBM", LOOPWEBM);
+		!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
+		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").prop('loop', LOOPWEBM);
+	});
+!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
+!EMBEDVID ? loopwebm.hide() : '';
+
 $('<div id="adAlert1"></div>').insertBefore($("#main"));
 $('<div id="adAlert2"></div>').insertBefore($("#main"));
 $('<div id="adChat"></div>').appendTo($("#chatwrap"));
@@ -3173,24 +3059,4 @@ $("#mediaurl").on("paste", function() {
 			$("#addfromurl-title-val")[0].value = mediaTitle;
 		}
 	}, 250);
-});
-
-$(document).ready(function() {
-    // Listen for chat messages
-    $('#messagebuffer').on('DOMNodeInserted', function(e) {
-        var message = $(e.target);
-        var text = message.find('.text').text();
-        
-        // Check if message starts with :pic
-        if (text.startsWith(':pic')) {
-            // Extract the image URL from the message
-            var imageUrl = text.substring(5).trim();
-            
-            // Create a new image element
-            var imgElement = $('<img>').attr('src', imageUrl);
-            
-            // Append the image to the chat
-            message.find('.username').after(imgElement);
-        }
-    });
 });
