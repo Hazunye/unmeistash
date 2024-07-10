@@ -40,13 +40,7 @@ var LeaveText_Message = 'has tried the restarting.';
 
 let TEAMCOLORREGEX = /( |)<span style="display:none" class="teamColorSpan">.+/gi;
 
-UI_EmbeddingMedia = 1;		// [&] possibility to embedding (displaying) images and .webm videos on the chat
-UI_MediaControls = 1;		// embedded video preloaded controls
-				// [ REQUIRE: UI_EmbeddingMedia enabled ]
 
-EmbeddingMedia_Images = 'a[href$=".jpg"], a[href$=".jpg:large"], a[href$=".jpeg"], a[href$=".JPG"], a[href$=".png"], a[href$=".tiff"], a[href$=".gif"]';
-
-EmbeddingMedia_Videos = 'a[href$=".webm"]';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* ----- END OF CONFIGURATION, DO NOT CHANGE ANYTHING BELOW ----- */
@@ -135,8 +129,9 @@ var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override 
 // The interval of time (in ms) to flush messages to the screen
 var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
 var AUTOREFRESH = getOrDefault(CHANNEL.name + "_AUTOREFRESH", false);
-
-
+var EMBEDVID = getOrDefault(CHANNEL.name + "_EMBEDVID", true);
+var AUTOVID = getOrDefault(CHANNEL.name + "_AUTOVID", true);
+var LOOPWEBM = getOrDefault(CHANNEL.name + "_LOOPWEBM", true);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -446,6 +441,25 @@ fixUserlistHover();
 /* ----- UI events functions ----- */
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function prepareFilters() {
+	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
+		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
+		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
+		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},';
+	
+	callback = function(data) {
+		socket.listeners("chatFilters").splice(
+			socket.listeners("chatFilters").indexOf(callback)
+		);
+		temp = JSON.stringify(data);
+		comma = (temp.length!="2") ? ',' : '';
+		$("#cs-chatfilters-exporttext").val(temp.substring(0, temp.length-1) + comma + str);
+	};
+	socket.once("chatFilters", callback);
+	socket.emit("requestChatFilters");
+}
 
 // change title bar description
 function changeTitle() {
@@ -805,63 +819,6 @@ if (USEROPTS.hidevid) {
 			$("#configform, #modeform").hide();
 			fitChat("auto");
 		});
-}
-
-// adding embedding options
-
-if (UI_EmbeddingMedia=="1" && (EmbeddingMedia_Images!="" || EmbeddingMedia_Videos!="")) {
-	embedform = $('<div id="embedform" class="form-group" />').appendTo(configwell);
-	$('<div class="col-lg-5 col-md-5 conf-cap">Embeds <span id="embed-help">[?]</span></div>')
-	  .appendTo(embedform);
-	embedwrap = $('<div id="embedwrap" class="col-lg-7 col-md-7" />').appendTo(embedform);
-
-	$("#embed-help").on("click", function() {
-		txt = 'This option lets you see images or videos directly on the chat, instead of links.\n'
-		  + 'Click on image or double click on video to open in the new tab.\n'
-		  + 'All videos are muted by default, if autoplay - click to unmute, else click to play.\n\n'
-		  + 'This channel supports following types of links (specified as CSS codes):\n'
-		  + '■ Images - ';
-		  (EmbeddingMedia_Images!="") ? txt+=EmbeddingMedia_Images : 'none';
-		txt += '\n■ Videos - ';
-		  (EmbeddingMedia_Videos!="") ? txt+=EmbeddingMedia_Videos : 'none';
-		alert(txt);
-	});
-
-	if (EmbeddingMedia_Images!="") {
-		embedimg = $('<label class="checkbox-inline" />').appendTo(embedwrap);
-		cbox = $('<input type="checkbox" id="embed-img" checked>')
-		  .appendTo(embedimg)
-		  .on("click", function() {
-			EMBEDIMG = !EMBEDIMG;
-				setOpt(CHANNEL.name+"_embedimg", EMBEDIMG);
-		  });
-		cbox.after(' img');
-		!EMBEDIMG ? cbox.removeAttr('checked') : '';
-	}
-
-	if (EmbeddingMedia_Videos!="") {
-		embedvid = $('<label class="checkbox-inline" />').appendTo(embedwrap);
-		cbox = $('<input type="checkbox" id="embed-webm" checked>')
-		  .appendTo(embedvid)
-		  .on("click", function() {
-			EMBEDVID = !EMBEDVID;
-			setOpt(CHANNEL.name+"_embedvid", EMBEDVID);
-			EMBEDVID ? autovid.show() : autovid.hide();
-		  });
-		cbox.after(' video');
-		!EMBEDVID ? cbox.removeAttr('checked') : '';
-
-		autovid = $('<label class="checkbox-inline" />').appendTo(embedwrap);
-		cbox = $('<input type="checkbox" id="auto-webm" checked>')
-		  .appendTo(autovid)
-		  .on("click", function() {
-			AUTOVID = !AUTOVID;
-			setOpt(CHANNEL.name+"_autovid", AUTOVID);
-	 	 });
-		cbox.after(' autoplay');
-		!AUTOVID ? cbox.removeAttr('checked') : '';
-		!EMBEDVID ? autovid.hide() : '';
-	}
 }
 
 //Team Colour
@@ -3003,6 +2960,78 @@ socket.on("login", function() {
 		JOINED = true;
 	}
 });
+
+function createWEBM() {
+	if (EMBEDVID) {
+		$(".webm").each(function() {
+			splitwebmlink = this.href;
+			vid = $('<video class="embedvid" />').attr('src', splitwebmlink).prop('loop', LOOPWEBM).prop('muted', 'true').prop('autoplay', AUTOVID)
+				.on("click", function() {
+					$(this).get(0).paused ? $(this).get(0).play() : $(this).get(0).pause();
+					return false;
+				}).on("dblclick", function() {
+					window.open(splitwebmlink, '_blank');
+					return false;
+				});
+			vid.attr('controls', '');
+			SCROLLCHAT ? scrollChat() : '';
+			$(this).before(vid).remove();
+		});
+		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").css({"max-width": MAXW + "px","max-height": MAXH + "px"});
+	}
+}
+
+EMBEDVID ? createWEBM() : "";
+
+socket.on("chatMsg", createWEBM);
+
+embedform = $('<div id="embedform" class="form-group" />').appendTo(configwell);
+$('<div class="col-lg-3 col-md-3 conf-cap">Embeds<span id="embed-help">[?]</span></div>')
+  .appendTo(embedform);
+embedwrap = $('<div id="embedwrap" class="btn-group col-lg-6 col-md-6" />').appendTo(embedform);
+txt = 'This option lets you see Webms directly on the chat, instead of links.\n'
+  + 'Double click on a Webm to open in the new tab.\n'
+  + 'All Webms are muted by default.';
+$("#embed-help").prop("title", txt).on("click", function() {
+	alert(txt);
+});
+embedvid = $('<button id="embedvid-btn" class="btn btn-sm btn-default" title="Toggle Webm">Webm</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		EMBEDVID = !EMBEDVID;
+		setOpt(CHANNEL.name + "_EMBEDVID", EMBEDVID);
+		toggleDiv(autovid);
+		toggleDiv(loopwebm);
+		!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
+		if (!EMBEDVID) {
+			$('.pm-buffer.linewrap video, #messagebuffer.linewrap video').each(function() {
+				$('<a target="_blank" class="webm"></a>').attr('href', $(this).prop('src')).insertBefore(this).text($(this).prop('src'));
+			}).remove();
+		} else {
+			createWEBM();
+		}
+  });
+!EMBEDVID ? embedvid.removeClass('btn-success') : embedvid.addClass('btn-success');
+autovid = $('<button id="autoplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Autoplay">Autoplay</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		AUTOVID = !AUTOVID;
+		setOpt(CHANNEL.name + "_AUTOVID", AUTOVID);
+		!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
+	});
+!AUTOVID ? autovid.removeClass('btn-success') : autovid.addClass('btn-success');
+!EMBEDVID ? autovid.hide() : '';
+
+loopwebm = $('<button id="loopplay-btn" class="btn btn-sm btn-default" title="Toggle Webm Loop">Loop</button>')
+	.appendTo(embedwrap)
+	.on("click", function() {
+		LOOPWEBM = !LOOPWEBM;
+		setOpt(CHANNEL.name + "_LOOPWEBM", LOOPWEBM);
+		!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
+		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").prop('loop', LOOPWEBM);
+	});
+!LOOPWEBM ? loopwebm.removeClass('btn-success') : loopwebm.addClass('btn-success');
+!EMBEDVID ? loopwebm.hide() : '';
 
 $('<div id="adAlert1"></div>').insertBefore($("#main"));
 $('<div id="adAlert2"></div>').insertBefore($("#main"));
