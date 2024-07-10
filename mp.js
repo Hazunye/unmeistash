@@ -864,145 +864,6 @@ if (UI_EmbeddingMedia=="1" && (EmbeddingMedia_Images!="" || EmbeddingMedia_Video
 	}
 }
 
-(UI_EmbeddingMedia=="1" && (EmbeddingMedia_Images!="" || EmbeddingMedia_Videos!="")) ? ALTERCHATFORMAT=true : '';
-(UI_UserMarks=="1" || UI_IndependentEmotes=="1" || UI_IndependentFilters=="1") ? ALTERCHATFORMAT=true : '';
-
-// alter chat messages formatting
-// DEV NOTE: this is extended function from CyTube "util.js" file
-
-if (ALTERCHATFORMAT) {
-	function formatChatMessage(data, last) {
-		if (!data.meta || data.msgclass) {
-			data.meta = {addClass:data.msgclass, addClassToNameAndTimestamp:data.msgclass};
-		}
-
-		skip=data.username===last.name;
-		data.meta.addClass==="server-whisper" ? skip=true : '';
-		data.msg.match(/^\s*<strong>\w+\s*:\s*<\/strong>\s*/) ? skip=false : '';
-		data.meta.forceShowName ? skip=false : '';
-		data.msg=execEmotes(data.msg);
- 
-		last.name = data.username;
-		div = $('<div />');
-		if (data.meta.addClass==="drink") {
-			div.addClass('drink');
-			data.meta.addClass='';
-		}
- 
-		if (USEROPTS.show_timestamps) {
-			time = $('<span class="timestamp" />').appendTo(div);
-			timestamp = new Date(data.time).toTimeString().split(' ')[0];
-			time.text('['+timestamp+'] ');
-			if (data.meta.addClass && data.meta.addClassToNameAndTimestamp) {
-				time.addClass(data.meta.addClass);
-			}
-		}
-
-		if (UI_UserMarks=="1" && UI_Squavatars=="1") {
-			html=createSquavatar(data.username);
-			div.html(div.html()+html);
-		}
-		if (UI_UserMarks=="1" && UI_Squavatars!="1") {
-			if (UserMarks_Array[data.username]!=undefined) {
-				html='<span class="avatar">'+UserMarks_Array[data.username]+'</span>';
-				div.html(div.html()+html);
-			}
-		}
- 
-		uname = $('<span />');
-		!skip ? uname.appendTo(div) : '';
-		mark = (UI_UsernameMark=="1" && UsernameMark_Char!="") ? UsernameMark_Char : ':';
-		$('<strong class="username" />').text(data.username+mark+' ').appendTo(uname);
-
-		data.meta.modflair ? uname.addClass(getNameColor(data.meta.modflair)) : '';
-		if (data.meta.addClass && data.meta.addClassToNameAndTimestamp) {
-			uname.addClass(data.meta.addClass);
-		}
-		if (data.meta.superadminflair) {
-			uname.addClass('globalmod label').addClass(data.meta.superadminflair.labelclass);
-			$('<span class="glyphicon" />').addClass(data.meta.superadminflair.icon)
-			  .prependTo(uname);
-		}
- 
-		message = $('<span />').appendTo(div);
-		message[0].innerHTML=data.msg;
-
-		(data.meta.addClass=="greentext") ? message.addClass('greentext') : '';
-		(data.meta.addClass=="spoiler") ? message.addClass('spoiler') : '';
-		(data.meta.addClass=="action") ? message.addClass('action') : '';
-		(data.meta.addClass=="server-whisper") ? message.addClass('server-whisper') : '';
-
-		if (data.meta.action) {
-			uname.remove();
-			message[0].innerHTML=data.username+' '+data.msg;
-		}
-
-		if (UI_IndependentEmotes=="1") {
-			_div=div.html();
-			for (i in IndependentEmotes) {
-				filter=IndependentEmotes[i][0];
-				html = '<img src="'+IndependentEmotes[i][1]+'" title="'+filter+'" '
-				  + 'style="width:'+IndependentEmotes[i][2]+'px; '
-				  + 'height:'+IndependentEmotes[i][3]+'px; '
-				  + 'cursor:pointer" onclick="insertText(\''+filter+'\')" />';
-				re=new RegExp(filter, 'g');
-				_div=_div.replace(re, html);
-			}
-			div.html(_div);
-		}
-		if (UI_IndependentFilters=="1") {
-			_div=div.html();
-			for (i in IndependentFilters) {
-				_div=_div.replace(IndependentFilters[i].before, IndependentFilters[i].after);
-			}
-			div.html(_div);
-		}
-
-		data.meta.addClass ? message.addClass(data.meta.addClass) : '';
-		data.meta.shadow ? div.addClass("chat-shadow") : '';
-		div.find("img").load(function() {
-			SCROLLCHAT ? scrollChat() : '';
-		});
-
-		if (EMBEDIMG && UI_EmbeddingMedia=="1") {
-			div.find(EmbeddingMedia_Images).each(function() {
-				img = $('<img class="embedimg" />').attr('src', this.href)
-				  .load(function() {
-					SCROLLCHAT ? scrollChat() : '';
-				  });
-  		  		$(this).html(img);
-			  });
-		}
-		if (EMBEDVID && UI_EmbeddingMedia=="1") {
-			div.find(EmbeddingMedia_Videos).each(function() {
-				vid = $('<video class="embedvid" />').attr('src', this.href).prop('loop', 'true')
-				  .load(function() {
-					SCROLLCHAT ? scrollChat() : '';
-				}).on("click", function() {
-    					if (!AUTOVID) {
-						if ($(this).get(0).paused) {
-							$(this).get(0).play();
-						} else {
-							$(this).get(0).pause();
-						}
-					} else {
-						$(this).prop('muted', !$(this).prop('muted'));
-					};
-					return false;
-				}).on("dblclick", function() {
-					window.open(this.src, '_blank');
-					return false;
-				});
-				AUTOVID ? vid.prop('autoplay', 'true').prop('muted', 'true') : '';
-				UI_MediaControls=="1" ? vid.attr('controls', '') : '';
-				$(this).html(vid);
-			});
-		}
-
-		return div;
-	}
-}
-
 //Team Colour
 $('head').append('<script type="text/javascript" src="' + `${SCRIPT_FOLDER_URL}/teamcolor.js` + '">');
 
@@ -3078,6 +2939,145 @@ function updateEndTimes(CurrVidTime) {
 				}
 			}
 		}
+	}
+}
+
+(UI_EmbeddingMedia=="1" && (EmbeddingMedia_Images!="" || EmbeddingMedia_Videos!="")) ? ALTERCHATFORMAT=true : '';
+(UI_UserMarks=="1" || UI_IndependentEmotes=="1" || UI_IndependentFilters=="1") ? ALTERCHATFORMAT=true : '';
+
+// alter chat messages formatting
+// DEV NOTE: this is extended function from CyTube "util.js" file
+
+if (ALTERCHATFORMAT) {
+	function formatChatMessage(data, last) {
+		if (!data.meta || data.msgclass) {
+			data.meta = {addClass:data.msgclass, addClassToNameAndTimestamp:data.msgclass};
+		}
+
+		skip=data.username===last.name;
+		data.meta.addClass==="server-whisper" ? skip=true : '';
+		data.msg.match(/^\s*<strong>\w+\s*:\s*<\/strong>\s*/) ? skip=false : '';
+		data.meta.forceShowName ? skip=false : '';
+		data.msg=execEmotes(data.msg);
+ 
+		last.name = data.username;
+		div = $('<div />');
+		if (data.meta.addClass==="drink") {
+			div.addClass('drink');
+			data.meta.addClass='';
+		}
+ 
+		if (USEROPTS.show_timestamps) {
+			time = $('<span class="timestamp" />').appendTo(div);
+			timestamp = new Date(data.time).toTimeString().split(' ')[0];
+			time.text('['+timestamp+'] ');
+			if (data.meta.addClass && data.meta.addClassToNameAndTimestamp) {
+				time.addClass(data.meta.addClass);
+			}
+		}
+
+		if (UI_UserMarks=="1" && UI_Squavatars=="1") {
+			html=createSquavatar(data.username);
+			div.html(div.html()+html);
+		}
+		if (UI_UserMarks=="1" && UI_Squavatars!="1") {
+			if (UserMarks_Array[data.username]!=undefined) {
+				html='<span class="avatar">'+UserMarks_Array[data.username]+'</span>';
+				div.html(div.html()+html);
+			}
+		}
+ 
+		uname = $('<span />');
+		!skip ? uname.appendTo(div) : '';
+		mark = (UI_UsernameMark=="1" && UsernameMark_Char!="") ? UsernameMark_Char : ':';
+		$('<strong class="username" />').text(data.username+mark+' ').appendTo(uname);
+
+		data.meta.modflair ? uname.addClass(getNameColor(data.meta.modflair)) : '';
+		if (data.meta.addClass && data.meta.addClassToNameAndTimestamp) {
+			uname.addClass(data.meta.addClass);
+		}
+		if (data.meta.superadminflair) {
+			uname.addClass('globalmod label').addClass(data.meta.superadminflair.labelclass);
+			$('<span class="glyphicon" />').addClass(data.meta.superadminflair.icon)
+			  .prependTo(uname);
+		}
+ 
+		message = $('<span />').appendTo(div);
+		message[0].innerHTML=data.msg;
+
+		(data.meta.addClass=="greentext") ? message.addClass('greentext') : '';
+		(data.meta.addClass=="spoiler") ? message.addClass('spoiler') : '';
+		(data.meta.addClass=="action") ? message.addClass('action') : '';
+		(data.meta.addClass=="server-whisper") ? message.addClass('server-whisper') : '';
+
+		if (data.meta.action) {
+			uname.remove();
+			message[0].innerHTML=data.username+' '+data.msg;
+		}
+
+		if (UI_IndependentEmotes=="1") {
+			_div=div.html();
+			for (i in IndependentEmotes) {
+				filter=IndependentEmotes[i][0];
+				html = '<img src="'+IndependentEmotes[i][1]+'" title="'+filter+'" '
+				  + 'style="width:'+IndependentEmotes[i][2]+'px; '
+				  + 'height:'+IndependentEmotes[i][3]+'px; '
+				  + 'cursor:pointer" onclick="insertText(\''+filter+'\')" />';
+				re=new RegExp(filter, 'g');
+				_div=_div.replace(re, html);
+			}
+			div.html(_div);
+		}
+		if (UI_IndependentFilters=="1") {
+			_div=div.html();
+			for (i in IndependentFilters) {
+				_div=_div.replace(IndependentFilters[i].before, IndependentFilters[i].after);
+			}
+			div.html(_div);
+		}
+
+		data.meta.addClass ? message.addClass(data.meta.addClass) : '';
+		data.meta.shadow ? div.addClass("chat-shadow") : '';
+		div.find("img").load(function() {
+			SCROLLCHAT ? scrollChat() : '';
+		});
+
+		if (EMBEDIMG && UI_EmbeddingMedia=="1") {
+			div.find(EmbeddingMedia_Images).each(function() {
+				img = $('<img class="embedimg" />').attr('src', this.href)
+				  .load(function() {
+					SCROLLCHAT ? scrollChat() : '';
+				  });
+  		  		$(this).html(img);
+			  });
+		}
+		if (EMBEDVID && UI_EmbeddingMedia=="1") {
+			div.find(EmbeddingMedia_Videos).each(function() {
+				vid = $('<video class="embedvid" />').attr('src', this.href).prop('loop', 'true')
+				  .load(function() {
+					SCROLLCHAT ? scrollChat() : '';
+				}).on("click", function() {
+    					if (!AUTOVID) {
+						if ($(this).get(0).paused) {
+							$(this).get(0).play();
+						} else {
+							$(this).get(0).pause();
+						}
+					} else {
+						$(this).prop('muted', !$(this).prop('muted'));
+					};
+					return false;
+				}).on("dblclick", function() {
+					window.open(this.src, '_blank');
+					return false;
+				});
+				AUTOVID ? vid.prop('autoplay', 'true').prop('muted', 'true') : '';
+				UI_MediaControls=="1" ? vid.attr('controls', '') : '';
+				$(this).html(vid);
+			});
+		}
+
+		return div;
 	}
 }
 
