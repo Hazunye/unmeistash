@@ -182,9 +182,6 @@ footer {padding-bottom:5px}
 }
 #messagebuffer>div{font-size:18px;}
 
-.embedimg {max-width:200px; max-height:300px}
-.embedvid {max-width:200px; max-height:300px; border:0px; vertical-align:middle}
-
 /* ----- Additional jQuery classes ----- */
 
 .relative {position:relative}
