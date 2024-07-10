@@ -3143,26 +3143,6 @@ socket.on("login", function() {
 	}
 });
 
-function createWEBM() {
-	if (EMBEDVID) {
-		$(".webm").each(function() {
-			splitwebmlink = this.href;
-			vid = $('<video class="embedvid" />').attr('src', splitwebmlink).prop('loop', LOOPWEBM).prop('muted', 'true').prop('autoplay', AUTOVID)
-				.on("click", function() {
-					$(this).get(0).paused ? $(this).get(0).play() : $(this).get(0).pause();
-					return false;
-				}).on("dblclick", function() {
-					window.open(splitwebmlink, '_blank');
-					return false;
-				});
-			vid.attr('controls', '');
-			SCROLLCHAT ? scrollChat() : '';
-			$(this).before(vid).remove();
-		});
-		$(".pm-buffer.linewrap video, #messagebuffer.linewrap video").css({"max-width": MAXW + "px","max-height": MAXH + "px"});
-	}
-}
-
 $('<div id="adAlert1"></div>').insertBefore($("#main"));
 $('<div id="adAlert2"></div>').insertBefore($("#main"));
 $('<div id="adChat"></div>').appendTo($("#chatwrap"));
