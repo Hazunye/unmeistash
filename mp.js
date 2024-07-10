@@ -1713,7 +1713,10 @@ if (HIDEHF) {
 	hidehfbtn.addClass('btn-danger');
 	hidehfbtn.attr("title","Show Header and Footer");
 }
-
+if (HIDEIMG) {
+	hideimgbtn.addClass('btn-danger');
+	hideimgbtn.attr("title", "Show Images");
+}
 function getVideoTime(data) {
 	clearInterval(ADDONESECOND);
 	hour = Math.floor(data.currentTime / 3600);
