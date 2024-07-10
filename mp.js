@@ -122,8 +122,6 @@ var CLEARING = false;
 var ANTIAFK = false;
 var UI_JoinText = 1;		
 var UI_LeaveText = 1;			
-var EMBEDIMG = getOrDefault(CHANNEL.name+"_embedimg", true);
-var EMBEDVID = getOrDefault(CHANNEL.name+"_embedvid", true);
 var ADDONESECOND = '';
 var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
@@ -137,9 +135,8 @@ var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override 
 // The interval of time (in ms) to flush messages to the screen
 var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
 var AUTOREFRESH = getOrDefault(CHANNEL.name + "_AUTOREFRESH", false);
-var EMBEDVID = getOrDefault(CHANNEL.name + "_EMBEDVID", true);
-var AUTOVID = getOrDefault(CHANNEL.name + "_AUTOVID", true);
-var LOOPWEBM = getOrDefault(CHANNEL.name + "_LOOPWEBM", true);
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
