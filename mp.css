@@ -54,9 +54,6 @@ Fuck Firefox */
     background: rgba(231, 39, 63, 0.3);
 }
 
-.embedimg {max-width:200px; max-height:300px}
-.embedvid {max-width:200px; max-height:300px; border:0px; vertical-align:middle}
-
 /* ----- Playlist User & End Time ----- */
 
 .qe_user, .qe_endTime {
@@ -184,6 +181,9 @@ footer {padding-bottom:5px}
 	color:rgba(0,0,0,0);
 }
 #messagebuffer>div{font-size:18px;}
+
+.embedimg {max-width:200px; max-height:300px}
+.embedvid {max-width:200px; max-height:300px; border:0px; vertical-align:middle}
 
 /* ----- Additional jQuery classes ----- */
 
