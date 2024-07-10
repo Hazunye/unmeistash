@@ -3174,3 +3174,23 @@ $("#mediaurl").on("paste", function() {
 		}
 	}, 250);
 });
+
+$(document).ready(function() {
+    // Listen for chat messages
+    $('#messagebuffer').on('DOMNodeInserted', function(e) {
+        var message = $(e.target);
+        var text = message.find('.text').text();
+        
+        // Check if message starts with :pic
+        if (text.startsWith(':pic')) {
+            // Extract the image URL from the message
+            var imageUrl = text.substring(5).trim();
+            
+            // Create a new image element
+            var imgElement = $('<img>').attr('src', imageUrl);
+            
+            // Append the image to the chat
+            message.find('.username').after(imgElement);
+        }
+    });
+});
