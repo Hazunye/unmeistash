@@ -111,6 +111,7 @@ var HIDEHF = getOrDefault(CHANNEL.name + "_HIDEHF", false);
 var HIDEPL = getOrDefault(CHANNEL.name + "_HIDEPL", false);
 var HIDEANN = getOrDefault(CHANNEL.name + "_HIDEANN", false);
 var HIDEMOTD = getOrDefault(CHANNEL.name + "_HIDEMOTD", false);
+var HIDEIMG = getOrDefault(CHANNEL.name + "_HIDEIMG", false);
 var CHATFUNC = false;
 var CLEARING = false;
 var ANTIAFK = false;
