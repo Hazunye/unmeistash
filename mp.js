@@ -116,6 +116,8 @@ var CLEARING = false;
 var ANTIAFK = false;
 var UI_JoinText = 1;		
 var UI_LeaveText = 1;			
+var UI_EmbeddingMedia = 1;		// [&] possibility to embedding (displaying) images and .webm videos on the chat
+var UI_MediaControls = 1;		// embedded video preloaded controls
 var ADDONESECOND = '';
 var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
@@ -447,7 +449,7 @@ function prepareFilters() {
 	str = '{"name":"Display webm","source":"http(.+?):webm","flags":"gi",'
 		+ '"replace":"<a class=\\"webm\\" href=\\"http$1\\" target=\\"_blank\\">http$1</a>","active":true,"filterlinks":true},'
 		+ '{"name":"Image","source":"http(.+?):pic","flags":"i",'
-		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true},';
+		+ '"replace":"<a class=\\"picturelink\\" href=\\"http$1\\" target=\\"_blank\\"><img src=\\"http$1\\" style=\\"max-width:300px; max-height:300px\\"></a>","active":true,"filterlinks":true}]';
 	
 	callback = function(data) {
 		socket.listeners("chatFilters").splice(
@@ -1368,6 +1370,26 @@ hidehfbtn = $('<button id="hidehf-btn" class="btn btn-sm btn-default" title="Hid
 		HIDEHF ? hidehfbtn.addClass('btn-danger') : hidehfbtn.removeClass('btn-danger');
 		HIDEPL ? hidehfbtn.attr("title","Show Header and Footer") : hidehfbtn.attr("title","Hide Header and Footer");
 });
+
+hideimgbtn = $('<span id="hideimg-btn" class="label label-default pull-right pointer" title="Hide Images">H</span>')
+	.insertAfter("#modflair")
+	.on("click", function() {
+		HIDEIMG = !HIDEIMG;
+		setOpt(CHANNEL.name + "_HIDEIMG", HIDEIMG);
+	  	if (HIDEIMG) {
+			removeImages();
+			hideimgbtn.addClass('btn-danger');
+			hideimgbtn.attr("title", "Show Images");
+		} else {
+			hideimgbtn.removeClass('btn-danger');
+			showImages();
+	 		hideimgbtn.attr("title", "Hide Images");
+		}
+});
+
+
+	
+
 // rearranging footer
 leftfooter = $('<span id="leftfooter"></span>').appendTo("footer .container");
 
