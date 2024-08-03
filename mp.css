@@ -173,6 +173,7 @@ footer {padding-bottom:5px}
 .teamkamina::before{background:url('./Images/Kamina_Glasses.png');}
 .teambeatrice::before{background:url('./Images/Beatrice_Icon.png');}
 .teammahoro::before{background:url('./Images/Mahoro_Icon.png');}
+.teambocc::before{background:url('./Images/bocchi.png');}
 
 .username::before{
 	content:"AA";
