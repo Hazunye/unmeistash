@@ -22,7 +22,7 @@ SCRIPT_FOLDER_URL = SCRIPT_FOLDER_URL.join('/');
 
 var adPercent = 0.1;
 
-var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/のヮの Haruka.png`;
+var Favicon_URL = `${SCRIPT_FOLDER_URL}/Images/haruka-san.png`;
 
 var ChannelName_Caption = "GATTAI";
 
